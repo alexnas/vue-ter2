@@ -11,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
   },
 
   {
-    path: '/',
+    path: '/data',
     name: 'data',
     component: () => import('@/views/DataTableView.vue'),
     meta: { layout: DefaultLayout }
