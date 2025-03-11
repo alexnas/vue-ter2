@@ -9,7 +9,7 @@
 body {
   background-color: #ffffff;
   color: #000000;
-  overflow: hidden;
+  overflow: auto;
   font-family:
     Inter,
     -apple-system,
