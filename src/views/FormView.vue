@@ -7,10 +7,34 @@ import type { IUser } from '@/types'
 const userStore = useUserStore()
 
 const userSchema = yup.object({
-  fio: yup.string().required('Пожалуйста, заполните поле').min(5).max(30),
-  birthday: yup.string().required('Пожалуйста, заполните поле').min(5).max(10),
-  phone: yup.string().required('Пожалуйста, заполните поле').min(5).max(10),
-  email: yup.string().required('Пожалуйста, заполните поле').email('Введите корректный email')
+  fio: yup
+    .string()
+    .trim()
+    .matches(
+      /^([а-яa-zё]+-?[а-яa-zё]+)( [а-яa-zё]+-?[а-яa-zё]+){1,2}$/,
+      'Пожалуйста, заполните поле ФИО (хх хх хх)'
+    )
+    .required('Пожалуйста, заполните поле'),
+  birthday: yup
+    .string()
+    .trim()
+    .matches(/^\d{1,2}\.\d{1,2}\.\d{4}$/, 'Пожалуйста, заполните поле даты рождения (12.12.1999)')
+    .required('Пожалуйста, заполните поле'),
+  phone: yup
+    .string()
+    .trim()
+    .matches(
+      /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/,
+      'Пожалуйста, заполните поле номера телефона (+71234567890)'
+    )
+    .required('Пожалуйста, заполните поле')
+    .min(5)
+    .max(10),
+  email: yup
+    .string()
+    .trim()
+    .required('Пожалуйста, заполните поле')
+    .email('Пожалуйста, заполните поле email (xxx@xxxx.xx)')
 })
 
 const initialFormData = {
@@ -51,11 +75,9 @@ const onSubmit = handleSubmit.withControlled((values) => {
       <div class="mb-5">
         <input
           type="text"
-          id="fio"
-          name="fio"
           v-model="fio"
           class="block w-full rounded-lg border-2 border-gray-500 p-2.5 text-sm text-gray-900"
-          placeholder="Ведите ФИО"
+          placeholder="Ведите имя"
           required
         />
         <span class="mt-1 flex justify-start text-[12px] text-blue-600">{{ errors.fio }}</span>
@@ -64,8 +86,6 @@ const onSubmit = handleSubmit.withControlled((values) => {
       <div class="mb-5">
         <input
           type="text"
-          id="birthday"
-          name="birthday"
           v-model="birthday"
           class="block w-full rounded-lg border-2 border-gray-500 p-2.5 text-sm text-gray-900"
           placeholder="Введите день рождения"
@@ -77,8 +97,6 @@ const onSubmit = handleSubmit.withControlled((values) => {
       <div class="mb-5">
         <input
           type="text"
-          id="phone"
-          name="phone"
           v-model="phone"
           class="block w-full rounded-lg border-2 border-gray-500 p-2.5 text-sm text-gray-900"
           placeholder="Введите телефон"
@@ -90,8 +108,6 @@ const onSubmit = handleSubmit.withControlled((values) => {
       <div class="mb-5">
         <input
           type="text"
-          id="email"
-          name="email"
           v-model="email"
           class="block w-full rounded-lg border-2 border-gray-500 p-2.5 text-sm text-gray-900"
           placeholder="Введите email"
@@ -99,8 +115,6 @@ const onSubmit = handleSubmit.withControlled((values) => {
         />
         <span class="mt-1 flex justify-start text-[12px] text-blue-600">{{ errors.email }}</span>
       </div>
-      <!-- :disabled="!meta.valid" -->
-      <!-- :disabled="!meta.dirty || !meta.valid" -->
 
       <button
         type="submit"
