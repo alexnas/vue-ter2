@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import * as yup from 'yup'
 import { useUserStore } from '@/stores/user'
 import type { IUser } from '@/types'
+import TerButton from '@/components/TerButton.vue'
 
+const router = useRouter()
 const userStore = useUserStore()
 
 const userSchema = yup.object({
@@ -49,6 +53,8 @@ const { handleSubmit, defineField, resetForm, meta, errors } = useForm({
   initialValues: initialFormData
 })
 
+const isLoading = ref(false)
+
 const [fio, fioAttrs] = defineField('fio')
 const [birthday, birthdayAttrs] = defineField('birthday')
 const [phone, phoneAttrs] = defineField('phone')
@@ -62,9 +68,12 @@ const onSubmit = handleSubmit.withControlled((values) => {
     phone: values.phone,
     email: values.email
   }
+
+  console.log('onSubmit', values)
   userStore.createUser(newUser)
 
   resetForm({ values: initialFormData })
+  router.push({ path: 'data' })
 })
 </script>
 
@@ -116,13 +125,7 @@ const onSubmit = handleSubmit.withControlled((values) => {
         <span class="mt-1 flex justify-start text-[12px] text-blue-600">{{ errors.email }}</span>
       </div>
 
-      <button
-        type="submit"
-        :disabled="!meta.dirty || !meta.valid"
-        class="w-full rounded-lg bg-green-400 px-5 py-2.5 text-center text-sm font-bold text-white hover:bg-linear-to-r hover:from-green-100 hover:to-green-300"
-      >
-        Submit
-      </button>
+      <TerButton :isButtonDisabled="!meta.dirty || !meta.valid" :loading="isLoading" />
     </form>
   </div>
 </template>
